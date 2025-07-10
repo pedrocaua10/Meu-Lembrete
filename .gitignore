@@ -19,3 +19,4 @@ tmp/
 # Misc
 .DS_Store
 Thumbs.db
+.angular/cache/
