@@ -1,0 +1,34 @@
+<div class="registro-container">
+  <mat-card class="registro-card">
+    <mat-card-header>
+      <mat-card-title>Crie sua conta</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="nome" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Senha</mat-label>
+          <input matInput formControlName="senha" type="password" required>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="registroForm.invalid">
+          Registrar
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <a mat-button routerLink="/login">Já tem conta? Faça login</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

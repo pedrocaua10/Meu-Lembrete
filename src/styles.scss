@@ -1,1 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+@import './assets/styles/variables';
+@import './assets/styles/mixins';
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+    
+    .router-outlet {
+      flex: 1;
+      padding: 2rem;
+      background-color: $background;
+    }
+  }
+}
+
+// Media Queries para responsividade
+@media (max-width: $breakpoint-tablet) {
+  .main-content {
+    flex-direction: column;
+    
+    .router-outlet {
+      padding: 1rem !important;
+    }
+  }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap');

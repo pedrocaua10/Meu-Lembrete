@@ -1,0 +1,26 @@
+<div class="lembrete-list">
+  <mat-card *ngFor="let lembrete of lembretes" class="lembrete-card">
+    <mat-card-header>
+      <mat-card-title>{{ lembrete.titulo }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ lembrete.data | date:'dd/MM/yyyy' }} - 
+        <span [class]="lembrete.prioridade">{{ lembrete.prioridade | uppercase }}</span>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>{{ lembrete.descricao }}</p>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button color="primary" (click)="edit.emit(lembrete.id)">
+        <mat-icon>edit</mat-icon>
+        Editar
+      </button>
+      <button mat-button color="warn" (click)="delete.emit(lembrete.id)">
+        <mat-icon>delete</mat-icon>
+        Excluir
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,18 @@
+@import 'src/assets/styles/variables';
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.priority-options {
+  display: flex;
+  gap: $spacing-md;
+  margin: $spacing-md 0;
+}

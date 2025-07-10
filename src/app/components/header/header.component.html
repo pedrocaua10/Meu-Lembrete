@@ -1,0 +1,19 @@
+<header class="header">
+  <div class="logo-container">
+    <span class="logo">ML</span>
+    <h1>Meu Lembrete</h1>
+  </div>
+
+  <div class="user-menu">
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon>account_circle</mat-icon>
+      Usuário
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Sair
+      </button>
+    </mat-menu>
+  </div>
+</header>

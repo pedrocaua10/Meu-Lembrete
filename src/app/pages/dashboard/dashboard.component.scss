@@ -1,0 +1,36 @@
+@import 'src/assets/styles/variables';
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.content-area {
+  flex: 1;
+  padding: $spacing-lg;
+  background-color: $background;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.view-options {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+
+  .active {
+    background-color: rgba($primary, 0.1);
+    color: $primary;
+  }
+}

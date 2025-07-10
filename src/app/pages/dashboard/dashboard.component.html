@@ -1,0 +1,29 @@
+<div class="dashboard-container">
+  <app-header></app-header>
+
+  <div class="main-content">
+    <app-sidebar></app-sidebar>
+
+    <div class="content-area">
+      <div class="toolbar">
+        <h1>Meus Lembretes</h1>
+        <button mat-raised-button color="primary" (click)="novoLembrete()">
+          <mat-icon>adicionar</mat-icon>
+          Novo Lembrete
+        </button>
+      </div>
+
+      <div class="view-options">
+        <button mat-button (click)="changeView('dia')" [class.active]="currentView === 'dia'">Dia</button>
+        <button mat-button (click)="changeView('semana')" [class.active]="currentView === 'semana'">Semana</button>
+        <button mat-button (click)="changeView('mes')" [class.active]="currentView === 'mes'">Mês</button>
+      </div>
+
+      <app-lembrete-list 
+        [lembretes]="lembretes" 
+        (edit)="editarLembrete($event)"
+        (delete)="excluirLembrete($event)">
+      </app-lembrete-list>
+    </div>
+  </div>
+</div>

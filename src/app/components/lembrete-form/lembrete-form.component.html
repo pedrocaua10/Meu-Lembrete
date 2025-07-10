@@ -1,0 +1,34 @@
+<form [formGroup]="lembreteForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Título</mat-label>
+    <input matInput formControlName="titulo" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Descrição</mat-label>
+    <textarea matInput formControlName="descricao" rows="3"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Data</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="data">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <div class="priority-section">
+    <h3>Prioridade</h3>
+    <mat-radio-group formControlName="prioridade">
+      <mat-radio-button value="baixa">Baixa</mat-radio-button>
+      <mat-radio-button value="media">Média</mat-radio-button>
+      <mat-radio-button value="alta">Alta</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div class="form-actions">
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="lembreteForm.invalid">
+      {{ isEditMode ? 'Atualizar' : 'Salvar' }}
+    </button>
+  </div>
+</form>
