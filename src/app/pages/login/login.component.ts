@@ -41,18 +41,25 @@ export class LoginComponent {
         error: (error) => {
           console.error('Login error:', error);
           this.loading = false;
-          // Adicione tratamento de erro específico aqui
+          
         }
       });
     }
   }
 
-  loginWithGoogle(): void {
-    this.authService.loginWithGoogle().subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: (error: any) => console.error('Google login error:', error)
-    });
-  }
+loginWithGoogle(): void {
+  this.loading = true;
+  this.authService.loginWithGoogle().subscribe({
+    next: () => {
+      this.router.navigate(['/dashboard']);
+      this.loading = false;
+    },
+    error: (error: any) => {
+      console.error('Google login error:', error);
+      this.loading = false;
+    }
+  });
+}
 
   forgotPassword(): void {
     this.router.navigate(['/reset-senha']);

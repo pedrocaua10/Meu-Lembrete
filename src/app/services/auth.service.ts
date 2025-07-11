@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import firebase from 'firebase/compat/app';
 
 interface Credenciais {
   email: string;
@@ -17,12 +19,12 @@ interface Usuario {
   providedIn: 'root'
 })
 export class AuthService {
-  loginWithGoogle() {
-    throw new Error('Method not implemented.');
-  }
   private apiUrl = 'http://localhost:3000/auth';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private afAuth: AngularFireAuth  // Injetar o AngularFireAuth
+  ) { }
 
   login(credenciais: Credenciais, password: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credenciais);
@@ -38,5 +40,20 @@ export class AuthService {
 
   estaAutenticado(): boolean {
     return !!localStorage.getItem('token');
+  }
+
+  // Implementação correta do login com Google
+  loginWithGoogle(): Observable<firebase.auth.UserCredential> {
+    return new Observable(observer => {
+      this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then((credential) => {
+          observer.next(credential);
+          observer.complete();
+        })
+        .catch((error) => {
+          observer.error(error);
+          observer.complete();
+        });
+    });
   }
 }

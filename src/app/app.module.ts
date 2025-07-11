@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 // Angular Material Modules
 import { MatCardModule } from '@angular/material/card';
@@ -30,6 +32,16 @@ import { LembreteFormComponent } from './components/lembrete-form/lembrete-form.
 import { LembreteListComponent } from './components/lembrete-list/lembrete-list.component';
 import { EdicaoSucessoComponent } from './components/edicao-sucesso/edicao-sucesso.component';
 import { AppRoutingModule } from './app-routing.module';
+
+
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_DOMINIO.firebaseapp.com",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_BUCKET.appspot.com",
+  messagingSenderId: "SEU_SENDER_ID",
+  appId: "SEU_APP_ID"
+};
 
 @NgModule({
   declarations: [
@@ -64,7 +76,9 @@ import { AppRoutingModule } from './app-routing.module';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSnackBarModule,
-    MatRadioModule // Adicionado para resolver erro do mat-radio-button
+    MatRadioModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireAuthModule // Adicionado para resolver erro do mat-radio-button
   ],
   providers: [],
   bootstrap: [AppComponent]
