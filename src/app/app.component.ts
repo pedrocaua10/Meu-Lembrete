@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -7,15 +9,19 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  showHeader = true;
-  showSidebar = true;
+  title = 'MED-LEMBRETE';
 
-  constructor(private router: Router) {
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationEnd) {
-        this.showHeader = !['/login', '/registro'].includes(event.url);
-        this.showSidebar = !['/login', '/registro', '/reset-senha'].includes(event.url);
-      }
-    });
+  constructor(
+    private titleService: Title,
+    private router: Router
+  ) {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const routeData = this.router.routerState.snapshot.root.firstChild?.data;
+        if (routeData && routeData['title']) {
+          this.titleService.setTitle(routeData['title']);
+        }
+      });
   }
 }

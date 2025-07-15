@@ -1,54 +1,10 @@
-@import './assets/styles/variables';
-@import './assets/styles/mixins';
-@import 'variables';
-@import 'mixins';
-@import './assets/styles/global';
-@import './assets/styles/layout';
-@import './assets/styles/components';
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@use './assets/scss/variables' as *;  
 
-html, body { 
-  height: 100%; 
-}
 
-body { 
-  margin: 0; 
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: $background;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  
-  .main-content {
-    display: flex;
-    flex: 1;
-    
-    .router-outlet {
-      flex: 1;
-      padding: 2rem;
-      background-color: $background;
-    }
-  }
-}
-
-// Media Queries para responsividade
-@media (max-width: $breakpoint-tablet) {
-  .main-content {
-    flex-direction: column;
-    
-    .router-outlet {
-      padding: 1rem !important;
-    }
-  }
-}
-
-html, body {
-  height: 100%;
+body {
   margin: 0;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: $font-family; 
+  background-color: $background-color;
+  color: $text-color;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600&display=swap');

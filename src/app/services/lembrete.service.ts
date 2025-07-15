@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Lembrete } from '../models/lembrete.model';
 
 @Injectable({
@@ -8,8 +8,18 @@ import { Lembrete } from '../models/lembrete.model';
 })
 export class LembreteService {
   private apiUrl = 'http://localhost:3000/lembretes';
+  private editModeSubject = new BehaviorSubject<string>('');
+  editMode$ = this.editModeSubject.asObservable();
 
   constructor(private http: HttpClient) { }
+
+  setEditMode(mode: string): void {
+    this.editModeSubject.next(mode);
+  }
+
+  clearEditMode(): void {
+    this.editModeSubject.next('');
+  }
 
   getLembretes(): Observable<Lembrete[]> {
     return this.http.get<Lembrete[]>(this.apiUrl);

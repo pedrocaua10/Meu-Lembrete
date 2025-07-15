@@ -1,0 +1,36 @@
+.success-message {
+  text-align: center;
+  padding: 20px;
+  background: #e8f5e9;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  
+  i {
+    font-size: 48px;
+    color: #4CAF50;
+    margin-bottom: 15px;
+  }
+  
+  h3 {
+    color: #2E7D32;
+    margin-bottom: 10px;
+  }
+}
+
+.back-btn {
+  background: #f1f3f9;
+  color: #2575fc;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+  width: 100%;
+  
+  &:hover {
+    background: #e4e8ff;
+  }
+}

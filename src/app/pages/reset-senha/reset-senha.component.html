@@ -1,24 +1,66 @@
-<div class="reset-container">
-  <mat-card class="reset-card">
-    <mat-card-header>
-      <mat-card-title>Redefinir Senha</mat-card-title>
-    </mat-card-header>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Meu Lembrete</h1>
+      <p class="subtitle">Crie uma nova senha</p>
+    </div>
 
-    <mat-card-content>
-      <form [formGroup]="resetForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email" required>
-        </mat-form-field>
+    <form [formGroup]="resetForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="newPassword">Nova senha</label>
+        <div class="password-input">
+          <input
+            [type]="showNewPassword ? 'text' : 'password'"
+            id="newPassword"
+            formControlName="newPassword"
+            placeholder="Crie uma senha forte"
+            [class.invalid]="resetForm.get('newPassword')?.invalid && resetForm.get('newPassword')?.touched">
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleNewPasswordVisibility()">
+            {{ showNewPassword ? '👁️‍🗨️' : '👁️' }}
+          </button>
+        </div>
+        <div *ngIf="resetForm.get('newPassword')?.invalid && resetForm.get('newPassword')?.touched"
+             class="error-message">
+          <span *ngIf="resetForm.get('newPassword')?.errors?.['required']">Senha é obrigatória</span>
+          <span *ngIf="resetForm.get('newPassword')?.errors?.['minlength']">Mínimo 6 caracteres</span>
+        </div>
+      </div>
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="resetForm.invalid">
-          Enviar Link de Redefinição
-        </button>
-      </form>
-    </mat-card-content>
+      <div class="form-group">
+        <label for="confirmPassword">Confirme a nova senha</label>
+        <div class="password-input">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            placeholder="Digite novamente sua senha"
+            [class.invalid]="(resetForm.get('confirmPassword')?.invalid || resetForm.errors?.['mismatch']) && resetForm.get('confirmPassword')?.touched">
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleConfirmPasswordVisibility()">
+            {{ showConfirmPassword ? '👁️‍🗨️' : '👁️' }}
+          </button>
+        </div>
+        <div *ngIf="resetForm.get('confirmPassword')?.touched && resetForm.errors?.['mismatch']"
+             class="error-message">
+          As senhas não coincidem
+        </div>
+      </div>
 
-    <mat-card-actions>
-      <a mat-button routerLink="/login">Voltar para Login</a>
-    </mat-card-actions>
-  </mat-card>
+      <button
+        type="submit"
+        class="auth-btn"
+        [disabled]="resetForm.invalid || isLoading">
+        {{ isLoading ? 'ATUALIZANDO...' : 'ATUALIZAR SENHA' }}
+      </button>
+
+      <div class="auth-footer">
+        <a routerLink="/login">Cancelar e voltar ao login</a>
+      </div>
+    </form>
+  </div>
 </div>

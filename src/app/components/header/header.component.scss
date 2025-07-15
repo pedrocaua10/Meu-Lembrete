@@ -1,22 +1,27 @@
-$primary: #3f51b5;
+@use 'styles/variables' as v;
+@use 'styles/mixins' as m;
 
 .header {
-  background: $primary;
+  @include m.flex-center;
+  background-color: map-get(v.$colors, 'primary');
+  padding: map-get(v.$spacing, 'md');
   color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+  &__content {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .user-menu {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  &__title {
+    margin: 0;
+    font-size: map-get(v.$font-sizes, 'large');
+  }
+
+  @include m.respond-to('tablet') {
+    padding: map-get(v.$spacing, 'lg');
   }
 }

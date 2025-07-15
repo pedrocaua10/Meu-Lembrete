@@ -1,59 +1,63 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import firebase from 'firebase/compat/app';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
-interface Credenciais {
-  email: string;
-  senha: string;
-}
-
-interface Usuario {
-  nome: string;
-  email: string;
-  senha: string;
-}
-
-@Injectable({
-  providedIn: 'root'
+@Injectable({ 
+  providedIn: 'root' 
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth';
+  private apiUrl = 'https://api.meulembrete.com';
 
-  constructor(
-    private http: HttpClient,
-    private afAuth: AngularFireAuth  // Injetar o AngularFireAuth
-  ) { }
+  constructor(private http: HttpClient) {}
 
-  login(credenciais: Credenciais, password: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credenciais);
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('authToken');
   }
 
-  registrar(usuario: Usuario): Observable<any> {
-    return this.http.post(`${this.apiUrl}/registrar`, usuario);
+  login(credentials: { email: string, password: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/login`, credentials)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  resetSenha(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-senha`, { email });
+  googleLogin(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/google`, {})
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  estaAutenticado(): boolean {
-    return !!localStorage.getItem('token');
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  // Implementação correta do login com Google
-  loginWithGoogle(): Observable<firebase.auth.UserCredential> {
-    return new Observable(observer => {
-      this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-        .then((credential) => {
-          observer.next(credential);
-          observer.complete();
-        })
-        .catch((error) => {
-          observer.error(error);
-          observer.complete();
-        });
-    });
+  resetPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password`, { email })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Ocorreu um erro desconhecido';
+    
+    if (error.error instanceof ErrorEvent) {
+      // Erro do lado do cliente
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      // Erro do lado do servidor
+      errorMessage = `Código: ${error.status}\nMensagem: ${error.message}`;
+      
+      if (error.error?.message) {
+        errorMessage = error.error.message;
+      }
+    }
+    
+    return throwError(() => new Error(errorMessage));
   }
 }
