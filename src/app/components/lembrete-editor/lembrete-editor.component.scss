@@ -1,0 +1,10 @@
+@import '../../assets/styles/variables';
+
+.editor-container {
+  padding: 20px;
+  
+  mat-card {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

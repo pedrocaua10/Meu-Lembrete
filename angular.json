@@ -41,8 +41,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "4kg",
-                  "maximumError": "6kb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -54,7 +54,8 @@
               "optimization": true,
               "vendorChunk": false,
               "extractLicenses": true,
-              "sourceMap": false
+              "sourceMap": false,
+              "namedChunks": false
             },
             "development": {
               "buildOptimizer": false,
@@ -77,10 +78,7 @@
               "browserTarget": "Meu-Lembrete:build:development"
             }
           },
-          "defaultConfiguration": "development",
-          "options": {
-            
-          }
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Lembrete } from '../../models/lembrete.model';
 
@@ -7,47 +7,38 @@ import { Lembrete } from '../../models/lembrete.model';
   templateUrl: './lembrete-form.component.html',
   styleUrls: ['./lembrete-form.component.scss']
 })
-export class LembreteFormComponent implements OnInit {
+export class LembreteFormComponent implements OnChanges {
   @Input() lembrete: Lembrete | null = null;
-  @Output() submit = new EventEmitter<Omit<Lembrete, 'id'>>();
+  @Output() submit = new EventEmitter<Lembrete>();
   @Output() cancel = new EventEmitter<void>();
 
-  lembreteForm: FormGroup;
-  isEditMode = false;
+  form: FormGroup;
+
+  prioridades = [
+    { value: 'baixa', label: 'Baixa' },
+    { value: 'media', label: 'Média' },
+    { value: 'alta', label: 'Alta' }
+  ];
 
   constructor(private fb: FormBuilder) {
-    this.lembreteForm = this.fb.group({
+    this.form = this.fb.group({
       titulo: ['', Validators.required],
       descricao: [''],
-      data: [null, Validators.required],
-      prioridade: ['media', Validators.required]
+      data: [new Date(), Validators.required],
+      prioridade: ['media', Validators.required],
+      concluido: [false]
     });
   }
 
-  ngOnInit(): void {
-    if (this.lembrete) {
-      this.isEditMode = true;
-      this.lembreteForm.patchValue({
-        titulo: this.lembrete.titulo,
-        descricao: this.lembrete.descricao,
-        data: this.lembrete.data,
-        prioridade: this.lembrete.prioridade
-      });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['lembrete'] && this.lembrete) {
+      this.form.patchValue(this.lembrete);
     }
   }
 
   onSubmit(): void {
-    if (this.lembreteForm.valid) {
-      const formValue = this.lembreteForm.value;
-      const lembreteData: Omit<Lembrete, 'id'> = {
-        titulo: formValue.titulo,
-        descricao: formValue.descricao,
-        data: formValue.data,
-        prioridade: formValue.prioridade,
-        concluido: false,
-        usuarioId: '1' // Substituir pelo ID do usuário real
-      };
-      this.submit.emit(lembreteData);
+    if (this.form.valid) {
+      this.submit.emit(this.form.value as Lembrete);
     }
   }
 

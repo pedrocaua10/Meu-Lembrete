@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { finalize } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +14,7 @@ export class LoginComponent {
   showPassword = false;
   isLoading = false;
   errorMessage: string | null = null;
+  returnUrl: string = '/dashboard';
 
   constructor(
     private fb: FormBuilder,
@@ -22,6 +22,16 @@ export class LoginComponent {
     private route: ActivatedRoute,
     private authService: AuthService
   ) {
+    // Se já autenticado, redireciona para o dashboard
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
+
+    // Obtém a URL de retorno da query string
+    this.route.queryParams.subscribe(params => {
+      this.returnUrl = params['returnUrl'] || '/dashboard';
+    });
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -44,12 +54,31 @@ export class LoginComponent {
 
     this.authService.login(credentials)
       .pipe(
-        finalize(() => this.isLoading = false)
+        finalize(() => {
+          this.isLoading = false;
+        })
       )
       .subscribe({
-        next: (response: any) => this.handleLoginSuccess(response),
-        error: (err: HttpErrorResponse) => this.handleLoginError(err)
+        next: () => {
+          // REDIRECIONA PARA A URL DE RETORNO APÓS LOGIN BEM-SUCEDIDO
+          this.router.navigateByUrl(this.returnUrl);
+        },
+        error: (error: any) => {
+          this.handleLoginError(error);
+        }
       });
+  }
+
+  private handleLoginError(error: any): void {
+    console.error('Erro no login:', error);
+    
+    if (error.status === 401) {
+      this.errorMessage = 'Credenciais inválidas';
+    } else if (error.status === 0) {
+      this.errorMessage = 'Sem conexão com o servidor';
+    } else {
+      this.errorMessage = 'Erro durante o login. Tente novamente.';
+    }
   }
 
   loginWithGoogle(): void {
@@ -58,34 +87,20 @@ export class LoginComponent {
 
     this.authService.googleLogin()
       .pipe(
-        finalize(() => this.isLoading = false)
+        finalize(() => {
+          this.isLoading = false;
+        })
       )
       .subscribe({
-        next: (response: any) => this.handleLoginSuccess(response),
-        error: (err: HttpErrorResponse) => this.handleLoginError(err)
+        next: () => {
+          // REDIRECIONA PARA A URL DE RETORNO APÓS LOGIN COM GOOGLE
+          this.router.navigateByUrl(this.returnUrl);
+        },
+        error: (err: any) => {
+          this.handleLoginError(err);
+        }
       });
-  }
-
-  private handleLoginSuccess(response: any): void {
-    // Armazena o token no localStorage
-    localStorage.setItem('authToken', response.token);
-    
-    // Obtém a URL de redirecionamento ou usa '/dashboard' como padrão
-    const redirectUrl = this.route.snapshot.queryParams['redirectTo'] || '/dashboard';
-    
-    // Navega para a URL desejada
-    this.router.navigateByUrl(redirectUrl)
-      .catch(() => this.router.navigate(['/dashboard']));
-  }
-
-  private handleLoginError(error: HttpErrorResponse): void {
-    if (error.status === 401) {
-      this.errorMessage = 'E-mail ou senha incorretos. Por favor, tente novamente.';
-    } else if (error.status === 0) {
-      this.errorMessage = 'Não foi possível conectar ao servidor. Verifique sua conexão com a internet.';
-    } else {
-      this.errorMessage = error.error?.message || 'Ocorreu um erro durante o login. Por favor, tente novamente mais tarde.';
-    }
+  
   }
 
   togglePasswordVisibility(): void {

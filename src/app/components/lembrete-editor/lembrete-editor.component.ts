@@ -10,7 +10,15 @@ import { Lembrete } from '../../models/lembrete.model';
 })
 export class LembreteEditorComponent implements OnInit {
   lembreteId: string | null = null;
-  lembrete: Lembrete | null = null;
+  lembrete: Lembrete = {
+    id: '',
+    titulo: '',
+    descricao: '',
+    data: new Date(),
+    prioridade: 'media',
+    concluido: false,
+    usuarioId: ''
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -22,14 +30,12 @@ export class LembreteEditorComponent implements OnInit {
     this.lembreteId = this.route.snapshot.paramMap.get('id');
     
     if (this.lembreteId) {
-      this.carregarLembrete();
+      this.carregarLembrete(this.lembreteId);
     }
   }
 
-  carregarLembrete(): void {
-    if (!this.lembreteId) return;
-    
-    this.lembreteService.getLembrete(this.lembreteId).subscribe({
+  carregarLembrete(id: string): void {
+    this.lembreteService.getLembrete(id).subscribe({
       next: (lembrete: Lembrete) => {
         this.lembrete = lembrete;
       },
@@ -39,14 +45,14 @@ export class LembreteEditorComponent implements OnInit {
     });
   }
 
-  salvarLembrete(lembreteData: Omit<Lembrete, 'id'>): void {
+  salvarLembrete(lembreteData: Lembrete): void {
     if (this.lembreteId) {
       this.lembreteService.atualizarLembrete({
         ...lembreteData,
         id: this.lembreteId
       }).subscribe({
         next: () => {
-          this.router.navigate(['/edicao-sucesso']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err: any) => {
           console.error('Erro ao atualizar lembrete:', err);

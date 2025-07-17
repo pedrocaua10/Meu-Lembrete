@@ -1,4 +1,16 @@
 @use './assets/scss/variables' as *;  
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
 
 
 body {

@@ -1,63 +1,36 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
-@Injectable({ 
-  providedIn: 'root' 
+@Injectable({
+  providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://api.meulembrete.com';
+  private readonly AUTH_TOKEN_KEY = 'med-lembrete-token';
 
-  constructor(private http: HttpClient) {}
+  constructor(private router: Router) {}
+
+  // Mock de login para desenvolvimento
+  login(credentials: any) {
+    return of({ token: 'fake-jwt-token' }).pipe(
+      delay(800) // Simula tempo de requisição
+    );
+  }
+
+  // Mock de login com Google
+  googleLogin() {
+    return of({ token: 'google-auth-token' }).pipe(
+      delay(800)
+    );
+  }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('authToken');
+    return !!localStorage.getItem(this.AUTH_TOKEN_KEY);
   }
 
-  login(credentials: { email: string, password: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/login`, credentials)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  googleLogin(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/google`, {})
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  register(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, userData)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  resetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, { email })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'Ocorreu um erro desconhecido';
-    
-    if (error.error instanceof ErrorEvent) {
-      // Erro do lado do cliente
-      errorMessage = `Erro: ${error.error.message}`;
-    } else {
-      // Erro do lado do servidor
-      errorMessage = `Código: ${error.status}\nMensagem: ${error.message}`;
-      
-      if (error.error?.message) {
-        errorMessage = error.error.message;
-      }
-    }
-    
-    return throwError(() => new Error(errorMessage));
+  logout(): void {
+    localStorage.removeItem(this.AUTH_TOKEN_KEY);
+    this.router.navigate(['/login']);
   }
 }

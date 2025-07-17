@@ -1,1 +1,12 @@
-<router-outlet></router-outlet>
+<app-dashboard></app-dashboard>
+<div *ngIf="true" style="padding: 20px; text-align: center;">
+  <h1>MED-LEMBRETE</h1>
+  <p>Aplicação carregada com sucesso!</p>
+  <p>Se você está vendo esta mensagem mas as telas estão em branco, verifique:</p>
+  <ul style="text-align: left; display: inline-block;">
+    <li>O console do navegador (F12) por erros</li>
+    <li>As rotas no arquivo app-routing.module.ts</li>
+    <li>Os seletores dos componentes</li>
+  </ul>
+  <router-outlet></router-outlet>
+</div>
