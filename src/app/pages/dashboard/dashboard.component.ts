@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { MatSelectionList } from '@angular/material/list';
+import { MatSelectionList, MatListModule } from '@angular/material/list';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
@@ -10,7 +10,8 @@ import { DatePipe } from '@angular/common';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe],
+  imports: [MatListModule]
 })
 export class DashboardComponent {
   @ViewChild('deleteList') deleteList!: MatSelectionList;

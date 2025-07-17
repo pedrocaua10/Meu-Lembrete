@@ -43,20 +43,32 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatRippleModule } from '@angular/material/core';
 import { AppComponent } from './app.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
-  declarations: [
-    // Seus componentes
-  ],
+  declarations: [DashboardComponent],
   imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    MatDividerModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
+
+  exports: [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CommonModule,
-    
-    // Todos os módulos do Angular Material
     MatSidenavModule,
     MatListModule,
     MatIconModule,
@@ -91,10 +103,9 @@ import { AppComponent } from './app.component';
     MatBottomSheetModule,
     MatAutocompleteModule,
     MatButtonToggleModule,
-    MatGridListModule,
-    MatRippleModule
+    MatGridListModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,9 +1,7 @@
 export interface Lembrete {
-  id: string;
+  id: number;
   title: string;
-  descricao: string;
-  data: Date;
-  prioridade: 'baixa' | 'media' | 'alta';
+  description: string;
+  date: Date;
   concluido: boolean;
-  usuarioId: string; // Adicione se for obrigatório ou usuarioId?: string se for opcional
 }

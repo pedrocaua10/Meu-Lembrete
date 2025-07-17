@@ -61,20 +61,12 @@
               <form (submit)="createReminder()">
                 <mat-form-field>
                   <mat-label>Título *</mat-label>
-                  <input matInput 
-                         [ngModel]="newReminder.titulo" 
-                         (ngModelChange)="newReminder.titulo = $event"
-                         name="titulo" 
-                         required>
+                  <input matInput [(ngModel)]="newReminder.title" name="title" required>
                 </mat-form-field>
                 
                 <mat-form-field>
                   <mat-label>Descrição</mat-label>
-                  <textarea matInput 
-                            [ngModel]="newReminder.descricao" 
-                            (ngModelChange)="newReminder.descricao = $event"
-                            name="descricao" 
-                            rows="3"></textarea>
+                  <textarea matInput [(ngModel)]="newReminder.description" name="description" rows="3"></textarea>
                 </mat-form-field>
                 
                 <mat-form-field>
@@ -103,20 +95,12 @@
                 <form>
                   <mat-form-field>
                     <mat-label>Título *</mat-label>
-                    <input matInput 
-                           [ngModel]="editingReminder?.titulo" 
-                           (ngModelChange)="editingReminder.titulo = $event"
-                           name="editTitle" 
-                           required>
+                    <input matInput [(ngModel)]="editingReminder.title" name="editTitle" required>
                   </mat-form-field>
                   
                   <mat-form-field>
                     <mat-label>Descrição</mat-label>
-                    <textarea matInput 
-                              [ngModel]="editingReminder?.descricao" 
-                              (ngModelChange)="editingReminder.descricao = $event"
-                              name="editDescription" 
-                              rows="3"></textarea>
+                    <textarea matInput [(ngModel)]="editingReminder.description" name="editDescription" rows="3"></textarea>
                   </mat-form-field>
                   
                   <mat-form-field>
@@ -138,7 +122,7 @@
                 
                 <mat-selection-list>
                   <mat-list-option *ngFor="let reminder of reminders" (click)="startEdit(reminder)">
-                    {{reminder.titulo}} - {{formatDate(reminder.data)}}
+                    {{reminder.title}} - {{reminder.date | date:'short'}}
                   </mat-list-option>
                 </mat-selection-list>
               </ng-template>
@@ -155,18 +139,18 @@
             <mat-card-content>
               <p>Selecione os lembretes que deseja excluir:</p>
               
-              <mat-selection-list #deleteList>
+              <mat-selection-list #deleteList="matSelectionList">
                 <mat-list-option *ngFor="let reminder of reminders" [value]="reminder">
-                  {{reminder.titulo}} - {{formatDate(reminder.data)}}
+                  {{reminder.title}} - {{reminder.date | date:'short'}}
                 </mat-list-option>
               </mat-selection-list>
               
               <div class="actions">
                 <button 
-                  [disabled]="!hasSelection()"
+                  [disabled]="deleteList.selectedOptions.selected.length === 0"
                   mat-raised-button 
                   color="warn"
-                  (click)="deleteReminder(getSelectedReminder())">Excluir
+                  (click)="deleteReminder(deleteList.selectedOptions.selected[0]?.value)">Excluir
                 </button>
               </div>
             </mat-card-content>
@@ -183,11 +167,11 @@
           <div class="reminders-list">
             <mat-card *ngFor="let reminder of reminders" class="reminder-card">
               <mat-card-header>
-                <mat-card-title>{{reminder.titulo}}</mat-card-title>
-                <mat-card-subtitle>{{formatDate(reminder.data)}}</mat-card-subtitle>
+                <mat-card-title>{{reminder.title}}</mat-card-title>
+                <mat-card-subtitle>{{reminder.date | date:'medium'}}</mat-card-subtitle>
               </mat-card-header>
               <mat-card-content>
-                <p>{{reminder.descricao}}</p>
+                <p>{{reminder.description}}</p>
               </mat-card-content>
               <mat-card-actions>
                 <button mat-button color="primary" (click)="startEdit(reminder)">Editar</button>
