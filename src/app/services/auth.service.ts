@@ -1,22 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  setAuthToken(token: string) {
+    throw new Error('Method not implemented.');
+  }
   private readonly AUTH_TOKEN_KEY = 'med-lembrete-token';
+  http: any;
 
   constructor(private router: Router) {}
 
   // Mock de login para desenvolvimento
-  login(credentials: any) {
-    return of({ token: 'fake-jwt-token' }).pipe(
-      delay(800) // Simula tempo de requisição
-    );
-  }
+ login(credentials: any): Observable<any> {
+  console.log('Enviando credenciais:', credentials);
+  return this.http.post('/api/login', credentials).pipe(
+    tap(response => console.log('Resposta do login:', response))
+  );
+}
 
   // Mock de login com Google
   googleLogin() {

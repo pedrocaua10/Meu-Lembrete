@@ -24,7 +24,7 @@ export class LoginComponent {
   ) {
     // Se já autenticado, redireciona para o dashboard
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      this.goToDashboard();
     }
 
     // Obtém a URL de retorno da query string
@@ -39,36 +39,32 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) {
-      this.markFormGroupTouched(this.loginForm);
-      return;
-    }
-
-    this.isLoading = true;
-    this.errorMessage = null;
-
-    const credentials = {
-      email: this.loginForm.get('email')?.value,
-      password: this.loginForm.get('password')?.value
-    };
-
-    this.authService.login(credentials)
-      .pipe(
-        finalize(() => {
-          this.isLoading = false;
-        })
-      )
-      .subscribe({
-        next: () => {
-          // REDIRECIONA PARA A URL DE RETORNO APÓS LOGIN BEM-SUCEDIDO
-          this.router.navigateByUrl(this.returnUrl);
-        },
-        error: (error: any) => {
-          this.handleLoginError(error);
-        }
-      });
+  if (this.loginForm.invalid) {
+    this.markFormGroupTouched(this.loginForm);
+    return;
   }
 
+  this.isLoading = true;
+  this.errorMessage = null;
+
+  const credentials = {
+    email: this.loginForm.get('email')?.value,
+    password: this.loginForm.get('password')?.value
+  };
+
+  // Simulação de chamada de API (igual ao reset-senha)
+  setTimeout(() => {
+    this.isLoading = false;
+    
+    // 1. Armazena o token de autenticação (simulado)
+    localStorage.setItem('auth_token', 'token_simulado_' + Date.now());
+    
+    // 2. Redireciona para o dashboard (igual ao reset-senha redireciona para tela-de-sucesso)
+    this.router.navigate(['/dashboard']);
+    
+    console.log('Login bem-sucedido! Token armazenado.');
+  }, 1500);
+}
   private handleLoginError(error: any): void {
     console.error('Erro no login:', error);
     
@@ -81,27 +77,23 @@ export class LoginComponent {
     }
   }
 
-  loginWithGoogle(): void {
-    this.isLoading = true;
-    this.errorMessage = null;
+ loginWithGoogle(): void {
+  this.isLoading = true;
+  this.errorMessage = null;
 
-    this.authService.googleLogin()
-      .pipe(
-        finalize(() => {
-          this.isLoading = false;
-        })
-      )
-      .subscribe({
-        next: () => {
-          // REDIRECIONA PARA A URL DE RETORNO APÓS LOGIN COM GOOGLE
-          this.router.navigateByUrl(this.returnUrl);
-        },
-        error: (err: any) => {
-          this.handleLoginError(err);
-        }
-      });
-  
-  }
+  // Simulação de chamada de API
+  setTimeout(() => {
+    this.isLoading = false;
+    
+    // 1. Armazena o token
+    localStorage.setItem('auth_token', 'google_token_simulado_' + Date.now());
+    
+    // 2. Redireciona
+    this.router.navigate(['/dashboard']);
+    
+    console.log('Login com Google bem-sucedido!');
+  }, 1500);
+}
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -111,8 +103,15 @@ export class LoginComponent {
     this.router.navigate(['/reset-senha']);
   }
 
-  goToRegister(): void {
-    this.router.navigate(['/registro']);
+  // Novo método para navegação
+  goToDashboard(): void {
+    console.log('Navegando para o dashboard:', this.returnUrl);
+    this.router.navigateByUrl(this.returnUrl)
+      .catch(error => {
+        console.error('Erro na navegação:', error);
+        // Fallback para a rota padrão
+        this.router.navigate(['/dashboard']);
+      });
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
@@ -124,4 +123,5 @@ export class LoginComponent {
       }
     });
   }
+  
 }

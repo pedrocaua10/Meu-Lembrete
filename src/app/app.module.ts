@@ -4,6 +4,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+// Components
+import { LoginComponent } from './pages/login/login.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { RegistroComponent } from './pages/registro/registro.component';
+import { ResetSenhaComponent } from './pages/reset-senha/reset-senha.component';
+import { SucessoComponent } from './pages/tela-de-sucesso/sucesso.component';
 
 // Angular Material Modules
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -42,33 +55,27 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatRippleModule } from '@angular/material/core';
-import { AppComponent } from './app.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
-  declarations: [DashboardComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    MatDividerModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule
+  declarations: [
+    AppComponent,
+    RegistroComponent,
+    LoginComponent,
+    ResetSenhaComponent,
+    SucessoComponent
   ],
-
-  exports: [
+  imports: [
     BrowserModule,
+    DashboardComponent,
+    FontAwesomeModule,
     BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
+    RouterModule,
+    
+    // Angular Material Modules
     MatSidenavModule,
     MatListModule,
     MatIconModule,
@@ -103,9 +110,14 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     MatBottomSheetModule,
     MatAutocompleteModule,
     MatButtonToggleModule,
-    MatGridListModule
+    MatGridListModule,
+    MatRippleModule
   ],
-  providers: [DatePipe],
+  providers: [
+    DatePipe,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

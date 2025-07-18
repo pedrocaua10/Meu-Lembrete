@@ -1,13 +1,16 @@
-@import '~@angular/material/theming';
+@use '@angular/material' as mat;
 
-$primary: mat-color(mat-palette($mat-indigo));
-$accent: mat-color(mat-palette($mat-pink, A200));
-$warn: mat-color(mat-palette($mat-red));
+// Configuração do tema
+$my-primary: mat.define-palette(mat.$indigo-palette);
+$my-accent: mat.define-palette(mat.$pink-palette, A200);
+$my-warn: mat.define-palette(mat.$red-palette);
+
+// Cores personalizadas
 $background: #f5f7fa;
 $text: #333;
-$sidenav-bg: #3f51b5; // Azul principal
+$sidenav-bg: mat.get-color-from-palette($my-primary, 500); // Azul principal
 $sidenav-text: #fff;
-$sidenav-active: #1a237e; // Azul mais escuro para itens ativos
+$sidenav-active: mat.get-color-from-palette($my-primary, 900); // Azul mais escuro
 $card-bg: #ffffff;
 
 .sidenav-container {
@@ -23,7 +26,7 @@ $card-bg: #ffffff;
     .sidenav-header {
       padding: 20px 16px;
       text-align: center;
-      background-color: darken($sidenav-bg, 10%);
+      background-color: mat.get-color-from-palette($my-primary, 700);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       
       h1 {
@@ -59,7 +62,7 @@ $card-bg: #ffffff;
     
     .sidenav-footer {
       padding: 16px;
-      background-color: darken($sidenav-bg, 10%);
+      background-color: mat.get-color-from-palette($my-primary, 700);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 0.9rem;
       text-align: center;
@@ -70,7 +73,7 @@ $card-bg: #ffffff;
       }
       
       strong {
-        color: #ffd740; // Amarelo para destaque
+        color: mat.get-color-from-palette(mat.$amber-palette, A400);
         font-weight: 500;
       }
     }
@@ -87,11 +90,11 @@ $card-bg: #ffffff;
       align-items: center;
       margin-bottom: 20px;
       padding-bottom: 10px;
-      border-bottom: 2px solid $primary;
+      border-bottom: 2px solid mat.get-color-from-palette($my-primary);
       
       h2 {
         margin: 0;
-        color: $primary;
+        color: mat.get-color-from-palette($my-primary);
         font-size: 1.8rem;
       }
     }
@@ -111,7 +114,7 @@ $card-bg: #ffffff;
           
           mat-card-title {
             font-weight: 500;
-            color: $primary;
+            color: mat.get-color-from-palette($my-primary);
           }
         }
       }
@@ -129,13 +132,18 @@ $card-bg: #ffffff;
           display: flex;
           justify-content: flex-end;
           margin-top: 20px;
+          gap: 10px;
+          
+          button {
+            min-width: 120px;
+          }
         }
       }
       
       .reminders-section {
         .info-card {
-          background-color: lighten($primary, 40%);
-          border-left: 4px solid $primary;
+          background-color: mat.get-color-from-palette($my-primary, 100);
+          border-left: 4px solid mat.get-color-from-palette($my-primary);
           padding: 15px;
           display: flex;
           align-items: center;
@@ -143,7 +151,7 @@ $card-bg: #ffffff;
           border-radius: 4px;
           
           mat-icon {
-            color: $primary;
+            color: mat.get-color-from-palette($my-primary);
             margin-right: 10px;
             font-size: 24px;
           }
@@ -151,7 +159,7 @@ $card-bg: #ffffff;
           p {
             margin: 0;
             font-size: 1.1rem;
-            color: darken($primary, 20%);
+            color: mat.get-color-from-palette($my-primary, 900);
           }
         }
         
@@ -167,23 +175,6 @@ $card-bg: #ffffff;
               transform: translateY(-5px);
               box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             }
-          }
-        }
-      }
-      
-      .profile-section {
-        .profile-avatar {
-          background-color: $primary;
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 40px;
-          height: 40px;
-          
-          mat-icon {
-            font-size: 24px;
           }
         }
       }

@@ -13,11 +13,7 @@ const routes: Routes = [
   { path: 'registro', component: RegistroComponent },
   { path: 'reset-senha', component: ResetSenhaComponent },
   { path: 'tela-de-sucesso', component: SucessoComponent },
-  { 
-    path: 'dashboard', 
-    component: DashboardComponent, 
-    canActivate: [AuthGuard] 
-  },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'test', component: TestComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }

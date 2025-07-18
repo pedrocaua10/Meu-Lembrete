@@ -1,73 +1,84 @@
-<div class="login-container">
-  <div class="login-card">
-    <h1 class="app-title">Meu Lembrete</h1>
-    <h2 class="login-title">Faça seu Login!</h2>
-    
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <!-- Email -->
+<div class="auth-container">
+  <div class="auth-card" [class.loading]="isLoading">
+    <div class="auth-header">
+      <h1>Meu Lembrete</h1>
+      <p class="subtitle">Acesse sua conta e continue organizado</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+      <div class="error-message">{{ errorMessage }}</div>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Campo de Email -->
       <div class="form-group">
-        <label>Insira seu email</label>
+        <label for="email">Email</label>
         <input 
           type="email" 
+          id="email" 
           formControlName="email"
-          placeholder="Digite seu e-mail"
+          placeholder="exemplo@email.com"
           [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
-          <span *ngIf="loginForm.get('email')?.errors?.['required']">E-mail é obrigatório</span>
-          <span *ngIf="loginForm.get('email')?.errors?.['email']">Digite um e-mail válido</span>
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="field-error">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email é obrigatório</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Email inválido</span>
         </div>
       </div>
 
-      <!-- Password -->
+      <!-- Campo de Senha -->
       <div class="form-group">
-        <label>Senha</label>
+        <label for="password">Senha</label>
         <div class="password-input">
           <input 
             [type]="showPassword ? 'text' : 'password'" 
+            id="password" 
             formControlName="password"
             placeholder="Digite sua senha"
             [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
           <button 
             type="button" 
-            class="toggle-password" 
-            (click)="togglePasswordVisibility()">
-            {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'">
+            <span class="password-icon" [class.visible]="showPassword"></span>
           </button>
         </div>
-        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="field-error">
           <span *ngIf="loginForm.get('password')?.errors?.['required']">Senha é obrigatória</span>
-          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">
-            Senha deve ter no mínimo 6 caracteres
-          </span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Mínimo 6 caracteres</span>
+        </div>
+        
+        <!-- Link "Esqueceu sua senha?" -->
+        <div class="forgot-password-container">
+          <a class="forgot-password" (click)="goToForgotPassword()">Esqueceu sua senha?</a>
         </div>
       </div>
 
-      <!-- Forgot Password -->
-      <div class="forgot-password">
-        <a (click)="goToForgotPassword()">Esqueceu sua senha?</a>
-      </div>
-
-      <!-- Login Button -->
-      <button type="submit" class="login-button" [disabled]="isLoading">
-        {{ isLoading ? 'Carregando...' : 'Entrar' }}
+      <button type="submit" class="auth-btn" [disabled]="loginForm.invalid || isLoading">
+        <span class="btn-content">
+          <span *ngIf="!isLoading">ENTRAR</span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </span>
       </button>
 
-      <!-- Social Login -->
-      <div class="social-login">
-        <p>Logar com:</p>
-        <button 
-          type="button" 
-          class="google-button" 
-          (click)="loginWithGoogle()" 
-          [disabled]="isLoading">
-          <img src="assets/icons/google-icon.png" alt="Google">
-          Google
-        </button>
+      <div class="divider">
+        <span class="line"></span>
+        <span class="text">ou</span>
+        <span class="line"></span>
       </div>
 
-      <!-- Register Link -->
-      <div class="register-link">
-        <p>Você ainda não tem uma conta? <a (click)="goToRegister()">Cadastre-se</a></p>
+      <button type="button" class="google-btn" (click)="loginWithGoogle()" [disabled]="isLoading">
+        <span class="btn-content">
+          <span *ngIf="!isLoading" class="google-content">
+            <img src="assets/icons/google-icon.png" alt="Google" width="20" height="20">
+            <span>Entrar com Google</span>
+          </span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </span>
+      </button>
+
+      <div class="auth-footer">
+        Não tem uma conta? <a routerLink="/registro" class="auth-link">Cadastre-se</a>
       </div>
     </form>
   </div>
