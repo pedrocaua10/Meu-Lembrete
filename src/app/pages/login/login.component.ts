@@ -1,20 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { finalize } from 'rxjs/operators';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
   loginForm: FormGroup;
   showPassword = false;
   isLoading = false;
   errorMessage: string | null = null;
   returnUrl: string = '/dashboard';
+  lockCountdown: string | null = null;
+  private countdownSubscription: Subscription | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -36,66 +38,103 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+
+    // Verifica se a conta está bloqueada ao iniciar
+    this.checkAccountLock();
   }
 
-onSubmit(): void {
-  if (this.loginForm.invalid) {
-    this.markFormGroupTouched(this.loginForm);
-    return;
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.markFormGroupTouched(this.loginForm);
+      return;
+    }
+
+    if (this.authService.isAccountLocked()) {
+      this.startCountdown();
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login(email, password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigateByUrl(this.returnUrl);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        if (error.status === 403) {
+          this.startCountdown();
+        } else if (error.status === 401) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Erro durante o login. Tente novamente.';
+        }
+      }
+    });
   }
 
-  this.isLoading = true;
-  this.errorMessage = null;
+  loginWithGoogle(): void {
+    if (this.authService.isAccountLocked()) {
+      this.startCountdown();
+      return;
+    }
 
-  // Simulação de chamada de API (igual ao reset-senha)
-  setTimeout(() => {
-    this.isLoading = false;
-    
-    // 1. Armazena o token de autenticação (simulado)
-    localStorage.setItem('auth_token', 'token_simulado_' + Date.now());
-    
-    // 2. Redireciona para o dashboard (igual ao reset-senha redireciona para tela-de-sucesso)
-    this.router.navigate(['/tela-de-sucesso'])
-      .then(() => {
-        console.log('Navegação para o dashboard bem-sucedida!');
-      })
-      .catch(err => {
-        console.error('Erro ao navegar para o dashboard:', err);
-        this.errorMessage = 'Erro ao redirecionar após login';
-      });
-    
-    console.log('Login bem-sucedido! Token armazenado.');
-  }, 1500);
-}
-  private handleLoginError(error: any): void {
-    console.error('Erro no login:', error);
-    
-    if (error.status === 401) {
-      this.errorMessage = 'Credenciais inválidas';
-    } else if (error.status === 0) {
-      this.errorMessage = 'Sem conexão com o servidor';
-    } else {
-      this.errorMessage = 'Erro durante o login. Tente novamente.';
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.authService.loginWithGoogle().subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigateByUrl(this.returnUrl);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        if (error.status === 403) {
+          this.startCountdown();
+        } else {
+          this.errorMessage = 'Erro ao fazer login com o Google.';
+        }
+      }
+    });
+  }
+
+  private checkAccountLock(): void {
+    if (this.authService.isAccountLocked()) {
+      this.startCountdown();
     }
   }
 
- loginWithGoogle(): void {
-  this.isLoading = true;
-  this.errorMessage = null;
+  private startCountdown(): void {
+    this.errorMessage = 'Muitas tentativas falhas. Sua conta foi bloqueada temporariamente.';
 
-  // Simulação de chamada de API
-  setTimeout(() => {
-    this.isLoading = false;
-    
-    // 1. Armazena o token
-    localStorage.setItem('auth_token', 'google_token_simulado_' + Date.now());
-    
-    // 2. Redireciona
-    this.router.navigate(['/tela-de-sucesso']);
-    
-    console.log('Login com Google bem-sucedido!');
-  }, 1500);
-}
+    // Inicia o contador regressivo
+    const remainingTime = this.authService.getRemainingLockTime();
+    let seconds = Math.ceil(remainingTime / 1000);
+
+    this.updateCountdown(seconds);
+
+    this.countdownSubscription = timer(0, 1000).subscribe(() => {
+      seconds -= 1;
+
+      if (seconds <= 0) {
+        this.lockCountdown = null;
+        this.errorMessage = null;
+        this.countdownSubscription?.unsubscribe();
+      } else {
+        this.updateCountdown(seconds);
+      }
+    });
+  }
+
+  private updateCountdown(seconds: number): void {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    this.lockCountdown = `Tente novamente em ${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -105,15 +144,8 @@ onSubmit(): void {
     this.router.navigate(['/reset-senha']);
   }
 
-  // Novo método para navegação
   goToDashboard(): void {
-    console.log('Navegando para o dashboard:', this.returnUrl);
-    this.router.navigateByUrl(this.returnUrl)
-      .catch(error => {
-        console.error('Erro na navegação:', error);
-        // Fallback para a rota padrão
-        this.router.navigate(['/dashboard']);
-      });
+    this.router.navigateByUrl(this.returnUrl);
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
@@ -125,5 +157,8 @@ onSubmit(): void {
       }
     });
   }
-  
+
+  ngOnDestroy(): void {
+    this.countdownSubscription?.unsubscribe();
+  }
 }

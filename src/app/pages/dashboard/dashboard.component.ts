@@ -1,5 +1,3 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -14,6 +12,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -66,8 +68,9 @@ export class DashboardComponent implements OnInit {
   filteredReminders: any[] = [];
 
   constructor(
-    private router: Router,
-    private snackBar: MatSnackBar
+  private router: Router,
+    private snackBar: MatSnackBar,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -397,7 +400,6 @@ export class DashboardComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('usuarioLogado');
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

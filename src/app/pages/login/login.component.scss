@@ -20,7 +20,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  
+
   &.loading::before {
     content: '';
     position: absolute;
@@ -65,14 +65,20 @@
       font-size: 14px;
       font-weight: 500;
       border-left: 4px solid $error-red;
-      display: flex;
+      display: block;
       align-items: center;
+       margin-bottom: 10px;
       
       &::before {
         content: '⚠️';
         margin-right: 10px;
         font-size: 16px;
       }
+       .countdown {
+      font-weight: bold;
+      color: $error-red;
+      font-size: 1.1rem;
+    }
     }
   }
 

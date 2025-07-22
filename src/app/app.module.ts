@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,7 +29,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
@@ -55,7 +55,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatRippleModule } from '@angular/material/core';
-;
+
+// Registra a localização para português
+registerLocaleData(localePt);
 
 @NgModule({
   declarations: [
@@ -118,8 +120,8 @@ import { MatRippleModule } from '@angular/material/core';
   ],
   providers: [
     DatePipe,
-    MatDatepickerModule,
-    MatNativeDateModule
+    { provide: LOCALE_ID, useValue: 'pt' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
   ],
   bootstrap: [AppComponent]
 })

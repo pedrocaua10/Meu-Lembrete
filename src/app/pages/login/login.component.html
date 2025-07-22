@@ -7,6 +7,7 @@
 
     <div *ngIf="errorMessage" class="error-container">
       <div class="error-message">{{ errorMessage }}</div>
+      <div *ngIf="lockCountdown" class="countdown">{{ lockCountdown }}</div>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>

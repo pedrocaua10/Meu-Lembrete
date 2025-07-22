@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: '**', redirectTo: 'login' }
 ];
 
+
 @NgModule({
    imports: [RouterModule.forRoot(routes, { enableTracing: true })],
   exports: [RouterModule]
