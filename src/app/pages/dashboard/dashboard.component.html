@@ -48,7 +48,7 @@
       </button>
     </div>
     
-   
+    <!-- Conteúdo dinâmico baseado no menu selecionado -->
     <div class="content-area">
       <ng-container [ngSwitch]="activeMenu">
         <!-- Criar Lembrete -->
@@ -69,12 +69,19 @@
                   <textarea matInput [(ngModel)]="newReminder.descricao" name="description" rows="3"></textarea>
                 </mat-form-field>
                 
-                <mat-form-field>
-                  <mat-label>Data e Hora *</mat-label>
-                  <input matInput [matDatepicker]="picker" [formControl]="dateControl">
-                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
+                <div class="date-time-container">
+                  <mat-form-field>
+                    <mat-label>Data *</mat-label>
+                    <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                  
+                  <mat-form-field>
+                    <mat-label>Hora *</mat-label>
+                    <input matInput type="time" [(ngModel)]="newReminder.hora" name="hora" required>
+                  </mat-form-field>
+                </div>
                 
                 <div class="priority-section">
                   <h3>Qual a Prioridade do Lembrete?</h3>
@@ -133,17 +140,19 @@
                     <textarea matInput [(ngModel)]="editingReminder.descricao" name="editDescription" rows="3"></textarea>
                   </mat-form-field>
                   
-                 <mat-form-field>
+                  <div class="date-time-container">
+                    <mat-form-field>
                       <mat-label>Data *</mat-label>
-                    <input matInput [matDatepicker]="editPicker" [formControl]="editDateControl">
-                   <mat-datepicker-toggle matSuffix [for]="editPicker"></mat-datepicker-toggle>
-                   <mat-datepicker #editPicker></mat-datepicker>
-                  </mat-form-field>
-                  <mat-form-field>
-                  <mat-label>Hora *</mat-label>
-                  <input matInput type="time" [(ngModel)]="editingReminder.hora" name="editHora" required>
-                </mat-form-field>
-
+                      <input matInput [matDatepicker]="editPicker" [formControl]="editDateControl">
+                      <mat-datepicker-toggle matSuffix [for]="editPicker"></mat-datepicker-toggle>
+                      <mat-datepicker #editPicker></mat-datepicker>
+                    </mat-form-field>
+                    
+                    <mat-form-field>
+                      <mat-label>Hora *</mat-label>
+                      <input matInput type="time" [(ngModel)]="editingReminder.hora" name="editHora" required>
+                    </mat-form-field>
+                  </div>
                   
                   <div class="priority-section">
                     <h3>Qual a Prioridade do Lembrete?</h3>
@@ -223,121 +232,121 @@
         </div>
         
         <!-- Lembretes -->
-       <div *ngSwitchCase="'reminders'" class="reminders-section">
-  <div class="info-card">
-    <mat-icon>info</mat-icon>
-    <p>Crie e não esqueça dos seus compromissos</p>
-  </div>
+        <div *ngSwitchCase="'reminders'" class="reminders-section">
+          <div class="info-card">
+            <mat-icon>info</mat-icon>
+            <p>Crie e não esqueça dos seus compromissos</p>
+          </div>
 
-  <div class="calendar-header">
-    <div class="calendar-controls">
-      <button mat-icon-button (click)="prevMonth()">
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-      <h2>Hajo, {{ currentDate | date:'MMMM yyyy' }}</h2>
-      <button mat-icon-button (click)="nextMonth()">
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-    </div>
-    
-    <div class="view-filters">
-      <button mat-button [class.active]="viewMode === 'day'" (click)="setViewMode('day')">Dia</button>
-      <button mat-button [class.active]="viewMode === 'week'" (click)="setViewMode('week')">Semana</button>
-      <button mat-button [class.active]="viewMode === 'month'" (click)="setViewMode('month')">Mês</button>
-    </div>
-  </div>
+          <div class="calendar-header">
+            <div class="calendar-controls">
+              <button mat-icon-button (click)="prevMonth()">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <h2> {{ currentDate | date:'MMMM yyyy' }}</h2>
+              <button mat-icon-button (click)="nextMonth()">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+            
+            <div class="view-filters">
+              <button mat-button [class.active]="viewMode === 'day'" (click)="setViewMode('day')">Dia</button>
+              <button mat-button [class.active]="viewMode === 'week'" (click)="setViewMode('week')">Semana</button>
+              <button mat-button [class.active]="viewMode === 'month'" (click)="setViewMode('month')">Mês</button>
+            </div>
+          </div>
 
-  <div class="calendar-container" *ngIf="viewMode === 'month'">
-    <div class="calendar-grid">
-      <div class="weekday" *ngFor="let day of weekDays">{{ day }}</div>
-      
-      <div class="day-cell" 
-           *ngFor="let day of calendarDays" 
-           [class.current-day]="isCurrentDay(day)"
-           [class.has-reminder]="hasReminder(day)">
-        <div class="day-number">{{ day.getDate() }}</div>
-        <div class="reminders-container">
-          <div *ngFor="let reminder of getRemindersForDay(day)" 
-               class="reminder-badge"
-               [ngClass]="reminder.prioridade"
-               (click)="viewReminderDetails(reminder)">
-            {{ reminder.titulo }}
+          <div class="calendar-container" *ngIf="viewMode === 'month'">
+            <div class="calendar-grid">
+              <div class="weekday" *ngFor="let day of weekDays">{{ day }}</div>
+              
+              <div class="day-cell" 
+                  *ngFor="let day of calendarDays" 
+                  [class.current-day]="isCurrentDay(day)"
+                  [class.has-reminder]="hasReminder(day)">
+                <div class="day-number">{{ day.getDate() }}</div>
+                <div class="reminders-container">
+                  <div *ngFor="let reminder of getRemindersForDay(day)" 
+                      class="reminder-badge"
+                      [ngClass]="reminder.prioridade"
+                      (click)="viewReminderDetails(reminder)">
+                    {{ reminder.titulo }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="week-view" *ngIf="viewMode === 'week'">
+            <div class="week-header">
+              <div class="week-day" *ngFor="let day of currentWeekDays">
+                <div class="day-name">{{ day | date:'EEE' }}</div>
+                <div class="day-date">{{ day | date:'dd/MM' }}</div>
+              </div>
+            </div>
+            
+            <div class="week-reminders">
+              <div class="day-reminders" *ngFor="let day of currentWeekDays">
+                <div *ngFor="let reminder of getRemindersForDay(day)" 
+                    class="reminder-item"
+                    [ngClass]="reminder.prioridade">
+                  <div class="reminder-time">{{ reminder.data | date:'HH:mm' }}</div>
+                  <div class="reminder-title">{{ reminder.titulo }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="day-view" *ngIf="viewMode === 'day'">
+            <h3>{{ currentDay | date:'EEEE, dd MMMM yyyy' }}</h3>
+            <div class="day-reminders-list">
+              <div *ngFor="let reminder of getRemindersForDay(currentDay)" 
+                  class="reminder-card"
+                  [ngClass]="reminder.prioridade">
+                <div class="reminder-header">
+                  <span class="time-badge">{{ reminder.data | date:'HH:mm' }}</span>
+                  <span class="priority-badge {{reminder.prioridade}}">
+                    {{reminder.prioridade | uppercase}}
+                  </span>
+                </div>
+                <div class="reminder-body">
+                  <h4>{{ reminder.titulo }}</h4>
+                  <p>{{ reminder.descricao }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="reminders-list-container">
+            <div class="list-header">
+              <h3>Lembretes</h3>
+              <mat-form-field class="search-field">
+                <mat-label>Pesquisar</mat-label>
+                <input matInput [(ngModel)]="searchTerm" placeholder="Digite para buscar...">
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+            </div>
+            
+            <div class="reminders-list">
+              <mat-card *ngFor="let reminder of filteredReminders" class="reminder-card" [ngClass]="reminder.prioridade">
+                <mat-card-header>
+                  <mat-card-title>{{reminder.titulo}}</mat-card-title>
+                  <mat-card-subtitle>{{reminder.data | date:'dd/MM/yyyy, HH:mm'}}</mat-card-subtitle>
+                  <span class="priority-badge {{reminder.prioridade}}">
+                    {{reminder.prioridade | uppercase}}
+                  </span>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>{{reminder.descricao}}</p>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-button color="primary" (click)="startEdit(reminder)">Editar</button>
+                  <button mat-button color="warn" (click)="deleteReminder(reminder)">Excluir</button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="week-view" *ngIf="viewMode === 'week'">
-    <div class="week-header">
-      <div class="week-day" *ngFor="let day of currentWeekDays">
-        <div class="day-name">{{ day | date:'EEE' }}</div>
-        <div class="day-date">{{ day | date:'dd/MM' }}</div>
-      </div>
-    </div>
-    
-    <div class="week-reminders">
-      <div class="day-reminders" *ngFor="let day of currentWeekDays">
-        <div *ngFor="let reminder of getRemindersForDay(day)" 
-             class="reminder-item"
-             [ngClass]="reminder.prioridade">
-          <div class="reminder-time">{{ reminder.data | date:'HH:mm' }}</div>
-          <div class="reminder-title">{{ reminder.titulo }}</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="day-view" *ngIf="viewMode === 'day'">
-    <h3>{{ currentDay | date:'EEEE, dd MMMM yyyy' }}</h3>
-    <div class="day-reminders-list">
-      <div *ngFor="let reminder of getRemindersForDay(currentDay)" 
-           class="reminder-card"
-           [ngClass]="reminder.prioridade">
-        <div class="reminder-header">
-          <span class="time-badge">{{ reminder.data | date:'HH:mm' }}</span>
-          <span class="priority-badge {{reminder.prioridade}}">
-            {{reminder.prioridade | uppercase}}
-          </span>
-        </div>
-        <div class="reminder-body">
-          <h4>{{ reminder.titulo }}</h4>
-          <p>{{ reminder.descricao }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="reminders-list-container">
-    <div class="list-header">
-      <h3>Lembretes</h3>
-      <mat-form-field class="search-field">
-        <mat-label>Pesquisar</mat-label>
-        <input matInput [(ngModel)]="searchTerm" placeholder="Digite para buscar...">
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-    </div>
-    
-    <div class="reminders-list">
-      <mat-card *ngFor="let reminder of filteredReminders" class="reminder-card" [ngClass]="reminder.prioridade">
-        <mat-card-header>
-          <mat-card-title>{{reminder.titulo}}</mat-card-title>
-          <mat-card-subtitle>{{reminder.data | date:'dd/MM/yyyy, HH:mm'}}</mat-card-subtitle>
-          <span class="priority-badge {{reminder.prioridade}}">
-            {{reminder.prioridade | uppercase}}
-          </span>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{reminder.descricao}}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button color="primary" (click)="startEdit(reminder)">Editar</button>
-          <button mat-button color="warn" (click)="deleteReminder(reminder)">Excluir</button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  </div>
-</div>
       </ng-container>
     </div>
   </mat-sidenav-content>

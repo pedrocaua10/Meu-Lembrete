@@ -1,55 +1,63 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-reset-password',
+  selector: 'app-reset-senha',
   templateUrl: './reset-senha.component.html',
   styleUrls: ['./reset-senha.component.scss']
 })
-export class ResetPasswordComponent {
+export class ResetSenhaComponent {
   resetForm: FormGroup;
-  email: string;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private router: Router
   ) {
-    this.email = history.state.email || '';
-    
     this.resetForm = this.fb.group({
-      email: [this.email, [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
   }
 
   passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password')?.value;
+    const newPassword = form.get('newPassword')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
-    return password === confirmPassword ? null : { mismatch: true };
+    return newPassword === confirmPassword ? null : { mismatch: true };
   }
 
-  onSubmit() {
-    if (this.resetForm.invalid) return;
-    
-    const { email, password } = this.resetForm.value;
-    
-    if (this.authService['updatePassword'](email, password)) {
-      this.snackBar.open('Senha atualizada com sucesso!', 'Fechar', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
-      });
-      this.router.navigate(['/login']);
-    } else {
-      this.snackBar.open('Email não encontrado', 'Fechar', {
-        duration: 3000,
-        panelClass: ['error-snackbar']
-      });
+  toggleNewPasswordVisibility(): void {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  onSubmit(): void {
+    if (this.resetForm.invalid) {
+      this.markFormGroupTouched(this.resetForm);
+      return;
     }
+
+    this.isLoading = true;
+    // Simulação de chamada de API
+    setTimeout(() => {
+      this.isLoading = false;
+      this.router.navigate(['/login']);
+    }, 1500);
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 }

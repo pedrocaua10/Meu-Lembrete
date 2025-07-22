@@ -7,7 +7,7 @@ $my-warn: mat.define-palette(mat.$red-palette);
 
 // Cores personalizadas
 $background: #f5f7fa;
-$text: #333;
+$text: #050505;
 $sidenav-bg: mat.get-color-from-palette($my-primary, 200); // Amarelo claro
 $sidenav-text: #333; 
 $sidenav-active: mat.get-color-from-palette($my-primary, 400); // Amarelo médio
@@ -139,6 +139,15 @@ $card-bg: #ffffff;
             min-width: 120px;
           }
         }
+        
+        .date-time-container {
+          display: flex;
+          gap: 20px;
+          
+          mat-form-field {
+            flex: 1;
+          }
+        }
       }
       
       .priority-section {
@@ -196,7 +205,54 @@ $card-bg: #ffffff;
           p {
             margin: 0;
             font-size: 1.1rem;
-            color: mat.get-color-from-palette($my-primary, 900);
+            color: mat.get-color-from-palette($my-primary, 800);
+          }
+        }
+        
+        .calendar-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          padding: 15px;
+          background-color: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          
+          .calendar-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            
+            h2 {
+              margin: 0;
+              color: mat.get-color-from-palette($my-primary, 600);
+              font-size: 1.5rem;
+              min-width: 200px;
+              text-align: center;
+            }
+            
+            button {
+              background-color: mat.get-color-from-palette($my-primary, 100);
+              border-radius: 50%;
+            }
+          }
+          
+          .view-filters {
+            display: flex;
+            gap: 10px;
+            
+            button {
+              padding: 6px 16px;
+              border-radius: 20px;
+              background-color: #f0f0f0;
+              transition: all 0.3s;
+              
+              &.active {
+                background-color: mat.get-color-from-palette($my-primary, 400);
+                color: white;
+              }
+            }
           }
         }
         
@@ -206,18 +262,6 @@ $card-bg: #ffffff;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
           padding: 20px;
           margin-bottom: 30px;
-          
-          .calendar-header {
-            text-align: center;
-            margin-bottom: 20px;
-            
-            h2 {
-              margin: 0;
-              color: mat.get-color-from-palette($my-primary, 600);
-              font-size: 1.5rem;
-              text-transform: capitalize;
-            }
-          }
           
           .calendar-grid {
             display: grid;
@@ -233,16 +277,28 @@ $card-bg: #ffffff;
             }
             
             .day-cell {
-              min-height: 100px;
+              min-height: 120px;
               border: 1px solid #eee;
               border-radius: 4px;
               padding: 8px;
               transition: all 0.2s;
               background-color: #f9f9f9;
+              position: relative;
               
               &:hover {
                 background-color: #f0f0f0;
                 transform: translateY(-2px);
+                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+              }
+              
+              &.current-day {
+                background-color: mat.get-color-from-palette($my-primary, 50);
+                border: 2px solid mat.get-color-from-palette($my-primary, 300);
+                
+                .day-number {
+                  background-color: mat.get-color-from-palette($my-primary, 400);
+                  color: white;
+                }
               }
               
               &.has-reminder {
@@ -251,23 +307,40 @@ $card-bg: #ffffff;
               }
               
               .day-number {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                width: 26px;
+                height: 26px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
                 font-weight: 500;
-                margin-bottom: 5px;
-                color: #555;
+                font-size: 0.9rem;
+                color: #0e0d0d;
               }
               
               .reminders-container {
-                max-height: 80px;
+                margin-top: 25px;
+                max-height: 90px;
                 overflow-y: auto;
                 
                 .reminder-badge {
                   font-size: 0.75rem;
-                  padding: 3px 6px;
-                  margin-bottom: 4px;
+                  padding: 4px 8px;
+                  margin-bottom: 5px;
                   border-radius: 4px;
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                  
+                  &:hover {
+                    transform: translateX(2px);
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                  }
                   
                   &.normal {
                     background-color: #4CAF50;
@@ -289,21 +362,181 @@ $card-bg: #ffffff;
           }
         }
         
-        .reminders-list-container {
+        .week-view {
+          background-color: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          margin-bottom: 30px;
+          
+          .week-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            
+            .week-day {
+              text-align: center;
+              padding: 10px;
+              
+              .day-name {
+                font-weight: 500;
+                color: mat.get-color-from-palette($my-primary, 600);
+                text-transform: uppercase;
+                font-size: 0.9rem;
+              }
+              
+              .day-date {
+                font-size: 1.1rem;
+                margin-top: 5px;
+              }
+            }
+          }
+          
+          .week-reminders {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            min-height: 300px;
+            
+            .day-reminders {
+              border-right: 1px solid #f0f0f0;
+              min-height: 300px;
+              padding: 5px;
+              
+              &:last-child {
+                border-right: none;
+              }
+              
+              .reminder-item {
+                padding: 8px;
+                margin-bottom: 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.2s;
+                
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                }
+                
+                .reminder-time {
+                  font-size: 0.8rem;
+                  font-weight: 500;
+                  margin-bottom: 3px;
+                }
+                
+                .reminder-title {
+                  font-size: 0.9rem;
+                }
+                
+                &.normal {
+                  background-color: #e8f5e9;
+                  border-left: 3px solid #4CAF50;
+                }
+                
+                &.medio {
+                  background-color: #fff8e1;
+                  border-left: 3px solid #FFC107;
+                }
+                
+                &.importante {
+                  background-color: #ffebee;
+                  border-left: 3px solid #F44336;
+                }
+              }
+            }
+          }
+        }
+        
+        .day-view {
+          background-color: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          margin-bottom: 30px;
+          
           h3 {
             color: mat.get-color-from-palette($my-primary, 600);
-            margin-bottom: 15px;
-            padding-bottom: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #eee;
+          }
+          
+          .day-reminders-list {
+            .reminder-card {
+              padding: 15px;
+              margin-bottom: 15px;
+              border-radius: 8px;
+              box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+              
+              .reminder-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px;
+                
+                .time-badge {
+                  background-color: mat.get-color-from-palette($my-primary, 100);
+                  padding: 3px 10px;
+                  border-radius: 12px;
+                  font-weight: 500;
+                }
+              }
+              
+              .reminder-body {
+                h4 {
+                  margin: 0 0 5px 0;
+                  font-size: 1.1rem;
+                }
+                
+                p {
+                  margin: 0;
+                  color: #080808;
+                }
+              }
+              
+              &.normal {
+                background-color: #e8f5e9;
+                border-left: 4px solid #4CAF50;
+              }
+              
+              &.medio {
+                background-color: #fff8e1;
+                border-left: 4px solid #FFC107;
+              }
+              
+              &.importante {
+                background-color: #ffebee;
+                border-left: 4px solid #F44336;
+              }
+            }
+          }
+        }
+        
+        .reminders-list-container {
+          .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            
+            h3 {
+              color: mat.get-color-from-palette($my-primary, 600);
+              margin: 0;
+            }
+            
+            .search-field {
+              width: 300px;
+            }
           }
           
           .reminders-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
             
             .reminder-card {
-              transition: transform 0.3s;
+              transition: all 0.3s;
               border-left: 4px solid;
               
               &:hover {
@@ -379,4 +612,30 @@ $card-bg: #ffffff;
   .priority-options {
     flex-direction: column;
   }
+  
+  .date-time-container {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .calendar-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .week-header {
+    grid-template-columns: repeat(7, 1fr) !important;
+    overflow-x: auto;
+  }
+}
+
+// Snackbars customizadas
+.success-snackbar {
+  background-color: #121312 !important;
+  color: white !important;
+}
+
+.error-snackbar {
+  background-color: #F44336 !important;
+  color: white !important;
 }
