@@ -7,7 +7,11 @@ import { delay, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
-  setAuthToken(token: string) {
+  [x: string]: any;
+  updateSenha(email: any, password: any) {
+    throw new Error('Method not implemented.');
+  }
+  setAuthToken(_token: string) {
     throw new Error('Method not implemented.');
   }
   private readonly AUTH_TOKEN_KEY = 'med-lembrete-token';

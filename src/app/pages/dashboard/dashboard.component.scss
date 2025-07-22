@@ -1,16 +1,16 @@
 @use '@angular/material' as mat;
 
-// Configuração do tema
-$my-primary: mat.define-palette(mat.$indigo-palette);
+// Configuração do tema - Usando paleta amarela mais clara
+$my-primary: mat.define-palette(mat.$yellow-palette, 200, 100, 400);
 $my-accent: mat.define-palette(mat.$pink-palette, A200);
 $my-warn: mat.define-palette(mat.$red-palette);
 
 // Cores personalizadas
 $background: #f5f7fa;
 $text: #333;
-$sidenav-bg: mat.get-color-from-palette($my-primary, 500); // Azul principal
-$sidenav-text: #fff;
-$sidenav-active: mat.get-color-from-palette($my-primary, 900); // Azul mais escuro
+$sidenav-bg: mat.get-color-from-palette($my-primary, 200); // Amarelo claro
+$sidenav-text: #333; 
+$sidenav-active: mat.get-color-from-palette($my-primary, 400); // Amarelo médio
 $card-bg: #ffffff;
 
 .sidenav-container {
@@ -26,8 +26,8 @@ $card-bg: #ffffff;
     .sidenav-header {
       padding: 20px 16px;
       text-align: center;
-      background-color: mat.get-color-from-palette($my-primary, 700);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: mat.get-color-from-palette($my-primary, 300);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       
       h1 {
         margin: 0;
@@ -45,25 +45,26 @@ $card-bg: #ffffff;
         transition: background-color 0.3s;
         
         &:hover {
-          background-color: rgba(255, 255, 255, 0.1);
+          background-color: rgba(0, 0, 0, 0.05);
         }
         
         &.active {
           background-color: $sidenav-active;
+          color: white;
           font-weight: 500;
         }
         
         mat-icon {
           margin-right: 10px;
-          color: $sidenav-text;
+          color: inherit;
         }
       }
     }
     
     .sidenav-footer {
       padding: 16px;
-      background-color: mat.get-color-from-palette($my-primary, 700);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: mat.get-color-from-palette($my-primary, 300);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
       font-size: 0.9rem;
       text-align: center;
       
@@ -73,7 +74,7 @@ $card-bg: #ffffff;
       }
       
       strong {
-        color: mat.get-color-from-palette(mat.$amber-palette, A400);
+        color: mat.get-color-from-palette(mat.$amber-palette, A100);
         font-weight: 500;
       }
     }
@@ -94,7 +95,7 @@ $card-bg: #ffffff;
       
       h2 {
         margin: 0;
-        color: mat.get-color-from-palette($my-primary);
+        color: mat.get-color-from-palette($my-primary, 600);
         font-size: 1.8rem;
       }
     }
@@ -114,7 +115,7 @@ $card-bg: #ffffff;
           
           mat-card-title {
             font-weight: 500;
-            color: mat.get-color-from-palette($my-primary);
+            color: mat.get-color-from-palette($my-primary, 600);
           }
         }
       }
@@ -140,6 +141,42 @@ $card-bg: #ffffff;
         }
       }
       
+      .priority-section {
+        margin: 20px 0;
+        
+        h3 {
+          margin-bottom: 10px;
+          color: mat.get-color-from-palette($my-primary, 600);
+          font-size: 1.1rem;
+        }
+        
+        .priority-options {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 20px;
+          
+          .priority-button {
+            flex: 1;
+            transition: all 0.3s;
+            
+            &.green {
+              background-color: #4CAF50 !important;
+              color: white !important;
+            }
+            
+            &.yellow {
+              background-color: #FFC107 !important;
+              color: black !important;
+            }
+            
+            &.red {
+              background-color: #F44336 !important;
+              color: white !important;
+            }
+          }
+        }
+      }
+      
       .reminders-section {
         .info-card {
           background-color: mat.get-color-from-palette($my-primary, 100);
@@ -151,7 +188,7 @@ $card-bg: #ffffff;
           border-radius: 4px;
           
           mat-icon {
-            color: mat.get-color-from-palette($my-primary);
+            color: mat.get-color-from-palette($my-primary, 600);
             margin-right: 10px;
             font-size: 24px;
           }
@@ -163,17 +200,150 @@ $card-bg: #ffffff;
           }
         }
         
-        .reminders-list {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 20px;
+        .calendar-container {
+          background-color: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          margin-bottom: 30px;
           
-          .reminder-card {
-            transition: transform 0.3s;
+          .calendar-header {
+            text-align: center;
+            margin-bottom: 20px;
             
-            &:hover {
-              transform: translateY(-5px);
-              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            h2 {
+              margin: 0;
+              color: mat.get-color-from-palette($my-primary, 600);
+              font-size: 1.5rem;
+              text-transform: capitalize;
+            }
+          }
+          
+          .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            
+            .weekday {
+              text-align: center;
+              font-weight: 500;
+              padding: 10px 0;
+              color: mat.get-color-from-palette($my-primary, 600);
+              border-bottom: 1px solid #eee;
+            }
+            
+            .day-cell {
+              min-height: 100px;
+              border: 1px solid #eee;
+              border-radius: 4px;
+              padding: 8px;
+              transition: all 0.2s;
+              background-color: #f9f9f9;
+              
+              &:hover {
+                background-color: #f0f0f0;
+                transform: translateY(-2px);
+              }
+              
+              &.has-reminder {
+                border-left: 3px solid mat.get-color-from-palette($my-primary);
+                background-color: #fff;
+              }
+              
+              .day-number {
+                font-weight: 500;
+                margin-bottom: 5px;
+                color: #555;
+              }
+              
+              .reminders-container {
+                max-height: 80px;
+                overflow-y: auto;
+                
+                .reminder-badge {
+                  font-size: 0.75rem;
+                  padding: 3px 6px;
+                  margin-bottom: 4px;
+                  border-radius: 4px;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  
+                  &.normal {
+                    background-color: #4CAF50;
+                    color: white;
+                  }
+                  
+                  &.medio {
+                    background-color: #FFC107;
+                    color: black;
+                  }
+                  
+                  &.importante {
+                    background-color: #F44336;
+                    color: white;
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        .reminders-list-container {
+          h3 {
+            color: mat.get-color-from-palette($my-primary, 600);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+          }
+          
+          .reminders-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            
+            .reminder-card {
+              transition: transform 0.3s;
+              border-left: 4px solid;
+              
+              &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+              }
+              
+              &.normal {
+                border-left-color: #4CAF50;
+              }
+              
+              &.medio {
+                border-left-color: #FFC107;
+              }
+              
+              &.importante {
+                border-left-color: #F44336;
+              }
+              
+              .priority-badge {
+                padding: 3px 8px;
+                border-radius: 12px;
+                font-size: 0.7rem;
+                margin-left: 10px;
+                
+                &.normal {
+                  background-color: #4CAF50;
+                  color: white;
+                }
+                
+                &.medio {
+                  background-color: #FFC107;
+                  color: black;
+                }
+                
+                &.importante {
+                  background-color: #F44336;
+                  color: white;
+                }
+              }
             }
           }
         }
@@ -192,7 +362,21 @@ $card-bg: #ffffff;
     padding: 15px !important;
   }
   
+  .calendar-grid {
+    .day-cell {
+      min-height: 80px !important;
+      
+      .reminders-container {
+        max-height: 60px !important;
+      }
+    }
+  }
+  
   .reminders-list {
     grid-template-columns: 1fr !important;
+  }
+  
+  .priority-options {
+    flex-direction: column;
   }
 }

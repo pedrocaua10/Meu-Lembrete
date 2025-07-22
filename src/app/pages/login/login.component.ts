@@ -38,7 +38,7 @@ export class LoginComponent {
     });
   }
 
-  onSubmit(): void {
+onSubmit(): void {
   if (this.loginForm.invalid) {
     this.markFormGroupTouched(this.loginForm);
     return;
@@ -46,11 +46,6 @@ export class LoginComponent {
 
   this.isLoading = true;
   this.errorMessage = null;
-
-  const credentials = {
-    email: this.loginForm.get('email')?.value,
-    password: this.loginForm.get('password')?.value
-  };
 
   // Simulação de chamada de API (igual ao reset-senha)
   setTimeout(() => {
@@ -60,7 +55,14 @@ export class LoginComponent {
     localStorage.setItem('auth_token', 'token_simulado_' + Date.now());
     
     // 2. Redireciona para o dashboard (igual ao reset-senha redireciona para tela-de-sucesso)
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/tela-de-sucesso'])
+      .then(() => {
+        console.log('Navegação para o dashboard bem-sucedida!');
+      })
+      .catch(err => {
+        console.error('Erro ao navegar para o dashboard:', err);
+        this.errorMessage = 'Erro ao redirecionar após login';
+      });
     
     console.log('Login bem-sucedido! Token armazenado.');
   }, 1500);
@@ -89,7 +91,7 @@ export class LoginComponent {
     localStorage.setItem('auth_token', 'google_token_simulado_' + Date.now());
     
     // 2. Redireciona
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/tela-de-sucesso']);
     
     console.log('Login com Google bem-sucedido!');
   }, 1500);

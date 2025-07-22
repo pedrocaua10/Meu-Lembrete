@@ -1,63 +1,55 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-reset-senha',
+  selector: 'app-reset-password',
   templateUrl: './reset-senha.component.html',
   styleUrls: ['./reset-senha.component.scss']
 })
-export class ResetSenhaComponent {
+export class ResetPasswordComponent {
   resetForm: FormGroup;
-  showNewPassword: boolean = false;
-  showConfirmPassword: boolean = false;
-  isLoading: boolean = false;
+  email: string;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
+    this.email = history.state.email || '';
+    
     this.resetForm = this.fb.group({
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      email: [this.email, [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
   }
 
   passwordMatchValidator(form: FormGroup) {
-    const newPassword = form.get('newPassword')?.value;
+    const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
-    return newPassword === confirmPassword ? null : { mismatch: true };
+    return password === confirmPassword ? null : { mismatch: true };
   }
 
-  toggleNewPasswordVisibility(): void {
-    this.showNewPassword = !this.showNewPassword;
-  }
-
-  toggleConfirmPasswordVisibility(): void {
-    this.showConfirmPassword = !this.showConfirmPassword;
-  }
-
-  onSubmit(): void {
-    if (this.resetForm.invalid) {
-      this.markFormGroupTouched(this.resetForm);
-      return;
+  onSubmit() {
+    if (this.resetForm.invalid) return;
+    
+    const { email, password } = this.resetForm.value;
+    
+    if (this.authService['updatePassword'](email, password)) {
+      this.snackBar.open('Senha atualizada com sucesso!', 'Fechar', {
+        duration: 3000,
+        panelClass: ['success-snackbar']
+      });
+      this.router.navigate(['/login']);
+    } else {
+      this.snackBar.open('Email não encontrado', 'Fechar', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
     }
-
-    this.isLoading = true;
-    // Simulação de chamada de API
-    setTimeout(() => {
-      this.isLoading = false;
-      this.router.navigate(['/tela-de-sucesso']);
-    }, 1500);
-  }
-
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.values(formGroup.controls).forEach(control => {
-      control.markAsTouched();
-
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched(control);
-      }
-    });
   }
 }

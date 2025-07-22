@@ -55,6 +55,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatRippleModule } from '@angular/material/core';
+;
 
 @NgModule({
   declarations: [
@@ -111,7 +112,9 @@ import { MatRippleModule } from '@angular/material/core';
     MatAutocompleteModule,
     MatButtonToggleModule,
     MatGridListModule,
-    MatRippleModule
+    MatRippleModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     DatePipe,
