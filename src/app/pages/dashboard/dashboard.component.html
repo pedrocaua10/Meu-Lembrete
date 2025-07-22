@@ -320,13 +320,7 @@
           <div class="reminders-list-container">
             <div class="list-header">
               <h3>Lembretes</h3>
-              <mat-form-field class="search-field">
-                <mat-label>Pesquisar</mat-label>
-                <input matInput [(ngModel)]="searchTerm" placeholder="Digite para buscar...">
-                <mat-icon matSuffix>search</mat-icon>
-              </mat-form-field>
             </div>
-            
             <div class="reminders-list">
               <mat-card *ngFor="let reminder of filteredReminders" class="reminder-card" [ngClass]="reminder.prioridade">
                 <mat-card-header>
